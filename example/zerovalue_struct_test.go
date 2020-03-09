@@ -5,7 +5,8 @@ type H struct {
 	b int
 }
 
-func example1() H {
+func IncompleteStructExample_fail() H {
+	// incomplete struct
 	h := H{
 		a: "foo",
 	}
