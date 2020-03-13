@@ -8,6 +8,7 @@ import (
 	"golang.org/x/tools/go/analysis"
 	"golang.org/x/tools/go/analysis/passes/inspect"
 	"golang.org/x/tools/go/ast/inspector"
+	"strings"
 )
 
 func diff(xs []string, ys []string) []string {
@@ -87,6 +88,11 @@ func run(pass *analysis.Pass) (interface{}, error) {
 		}
 	})
 
+	commentMapFiles := map[string]ast.CommentMap{}
+	for _, file := range pass.Files {
+		commentMapFiles[pass.Fset.Position(file.Pos()).Filename] = ast.NewCommentMap(pass.Fset, file, file.Comments)
+	}
+
 	recordInitializerInspector := []ast.Node{
 		(*ast.CompositeLit)(nil),
 	}
@@ -95,6 +101,12 @@ func run(pass *analysis.Pass) (interface{}, error) {
 
 	// 全てのexpressionについてチェック
 	inspect.Preorder(recordInitializerInspector, func(n ast.Node) {
+		for _, comment := range commentMapFiles[pass.Fset.Position(n.Pos()).Filename].Filter(n).Comments() {
+			if strings.HasPrefix(comment.Text(), "@ignore-golint-extra") {
+				return
+			}
+		}
+
 		switch expr := n.(type) {
 		case *ast.CompositeLit:
 			p, ok := expr.Type.(*ast.Ident)

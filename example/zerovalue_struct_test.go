@@ -5,6 +5,16 @@ type H struct {
 	b int
 }
 
+func IncompleteStructExample_ignore_success() H {
+	// incomplete struct
+	h := H{
+		// @ignore-golint-extra
+		a: "foo",
+	}
+
+	return h
+}
+
 func IncompleteStructExample_fail() H {
 	// incomplete struct
 	h := H{
