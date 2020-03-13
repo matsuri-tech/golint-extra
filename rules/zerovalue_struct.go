@@ -137,6 +137,10 @@ func run(pass *analysis.Pass) (interface{}, error) {
 			}
 
 			// KeyValueExprが続くときだけ処理する
+			if len(expr.Elts) == 0 {
+				return
+			}
+
 			_, ok = expr.Elts[0].(*ast.KeyValueExpr)
 			if !ok {
 				return
