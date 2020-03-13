@@ -1,5 +1,11 @@
 # golint-extra
 
+## How to use
+
+```sh
+$ go run github.com/matsuri-tech/golint-extra ./...
+```
+
 ## Ignore lint
 
 Use `@ignore-golint-extra`
