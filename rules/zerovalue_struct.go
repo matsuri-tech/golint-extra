@@ -157,7 +157,6 @@ func run(pass *analysis.Pass) (interface{}, error) {
 				return
 			}
 
-			result = append(result, errors.New(fmt.Sprintf("%+v", keys)))
 			return
 		}
 	})

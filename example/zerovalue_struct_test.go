@@ -30,7 +30,7 @@ func NoFieldsExample_success() {
 
 // An example using multiple functions
 
-func Ex1() string {
+func Ex1_success() string {
 	// Inner function struct
 	type A struct {
 		a string
@@ -43,7 +43,7 @@ func Ex1() string {
 	return a.a
 }
 
-func Ex2() int {
+func Ex2_success() int {
 	// Inner function struct
 	type A struct {
 		b int
