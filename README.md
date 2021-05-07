@@ -24,4 +24,4 @@ h := H{
 
 ## Rules
 
-- `zerovalue_struct`: ban incomplete struct initialization 
+- `zerovalue_struct`: ban incomplete struct initialization (inner function structs are not supported)

@@ -69,6 +69,8 @@ func run(pass *analysis.Pass) (interface{}, error) {
 		switch decl := n.(type) {
 		case *ast.GenDecl:
 			if decl.Tok.IsKeyword() && decl.Tok.String() == "type" {
+				// 関数内の構造体は同名で複数の構造体が定義されている場合があるので無視する
+				// パッケージ内に定義されている場合は、exposeしていなくても同名の定義はできないのでこのような問題は起きない
 				if prevFuncPos != nil && prevFuncEnd != nil && *prevFuncPos < decl.Pos() && decl.End() < *prevFuncEnd {
 					log.Printf("Found inner function struct %+v, skipping...\n", decl.Specs[0].(*ast.TypeSpec).Name)
 					return
