@@ -23,3 +23,35 @@ func IncompleteStructExample_fail() H {
 
 	return h
 }
+
+func NoFieldsExample_success() {
+	_ = H{}
+}
+
+// An example using multiple functions
+
+func Ex1() string {
+	// Inner function struct
+	type A struct {
+		a string
+	}
+
+	a := A{
+		a: "foo",
+	}
+
+	return a.a
+}
+
+func Ex2() int {
+	// Inner function struct
+	type A struct {
+		b int
+	}
+
+	a := A{
+		b: 200,
+	}
+
+	return a.b
+}
