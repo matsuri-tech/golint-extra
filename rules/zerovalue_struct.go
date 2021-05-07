@@ -165,7 +165,16 @@ func run(pass *analysis.Pass) (interface{}, error) {
 
 			var keys []string
 			for _, e := range expr.Elts {
-				keys = append(keys, e.(*ast.KeyValueExpr).Key.(*ast.Ident).Name)
+				key := e.(*ast.KeyValueExpr).Key
+				ident, ok := key.(*ast.Ident)
+				if !ok {
+					log.Printf("Found a non ident key: %+v\n", key)
+					ast.Fprint(log.Writer(), &token.FileSet{}, expr, ast.NotNilFilter)
+
+					return
+				}
+
+				keys = append(keys, ident.Name)
 			}
 
 			expected := rc[p.String()]
@@ -192,9 +201,9 @@ func run(pass *analysis.Pass) (interface{}, error) {
 
 func NewZeroValueStruct() *analysis.Analyzer {
 	return &analysis.Analyzer{
-		Name: "zerovalue_struct",
-		Doc:  "zerovalue-struct",
-		Run:  run,
+		Name:     "zerovalue_struct",
+		Doc:      "zerovalue-struct",
+		Run:      run,
 		Requires: []*analysis.Analyzer{inspect.Analyzer},
 	}
 }
