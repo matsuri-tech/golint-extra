@@ -4,6 +4,9 @@
 
 ```sh
 $ go run github.com/matsuri-tech/golint-extra ./...
+
+# Or you just want to see logs:
+$ DEBUG=true go run github.com/matsuri-tech/golint-extra ./...
 ```
 
 ## Ignore lint
