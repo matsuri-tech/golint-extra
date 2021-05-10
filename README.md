@@ -4,6 +4,9 @@
 
 ```sh
 $ go run github.com/matsuri-tech/golint-extra ./...
+
+# Or you just want to see logs:
+$ DEBUG=true go run github.com/matsuri-tech/golint-extra ./...
 ```
 
 ## Ignore lint
@@ -21,4 +24,4 @@ h := H{
 
 ## Rules
 
-- `zerovalue_struct`: ban incomplete struct initialization 
+- `zerovalue_struct`: ban incomplete struct initialization (inner function structs are not supported)
