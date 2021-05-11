@@ -9,6 +9,7 @@ import (
 	"golang.org/x/tools/go/analysis/passes/inspect"
 	"golang.org/x/tools/go/ast/inspector"
 	"log"
+	"os"
 	"strings"
 )
 
@@ -53,6 +54,8 @@ func checkExpr(fset token.FileSet, rc RecordFields, expr ast.Expr) error {
 }
 
 func run(pass *analysis.Pass) (interface{}, error) {
+	includeTests := os.Getenv("INCLUDE_TESTS") == "true"
+
 	inspect := pass.ResultOf[inspect.Analyzer].(*inspector.Inspector)
 
 	recordFieldInspector := []ast.Node{
@@ -66,6 +69,10 @@ func run(pass *analysis.Pass) (interface{}, error) {
 
 	// レコードのフィールドを集める
 	inspect.Preorder(recordFieldInspector, func(n ast.Node) {
+		if !includeTests && strings.HasSuffix(pass.Fset.Position(n.Pos()).Filename, "_test.go") {
+			return
+		}
+
 		switch decl := n.(type) {
 		case *ast.GenDecl:
 			if decl.Tok.IsKeyword() && decl.Tok.String() == "type" {
@@ -118,6 +125,11 @@ func run(pass *analysis.Pass) (interface{}, error) {
 
 	// 全てのexpressionについてチェック
 	inspect.Preorder(recordInitializerInspector, func(n ast.Node) {
+		// INCLUDE_TESTSがセットされていないときはテストファイルを無視する
+		if !includeTests && strings.HasSuffix(pass.Fset.Position(n.Pos()).Filename, "_test.go") {
+			return
+		}
+
 		for _, comment := range commentMapFiles[pass.Fset.Position(n.Pos()).Filename].Filter(n).Comments() {
 			if strings.HasPrefix(comment.Text(), "@ignore-golint-extra") {
 				return
