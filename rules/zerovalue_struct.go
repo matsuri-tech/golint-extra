@@ -9,6 +9,7 @@ import (
 	"golang.org/x/tools/go/analysis/passes/inspect"
 	"golang.org/x/tools/go/ast/inspector"
 	"log"
+	"os"
 	"strings"
 )
 
@@ -53,6 +54,8 @@ func checkExpr(fset token.FileSet, rc RecordFields, expr ast.Expr) error {
 }
 
 func run(pass *analysis.Pass) (interface{}, error) {
+	includeTests := os.Getenv("INCLUDE_TESTS") == "true"
+
 	inspect := pass.ResultOf[inspect.Analyzer].(*inspector.Inspector)
 
 	recordFieldInspector := []ast.Node{
@@ -66,6 +69,10 @@ func run(pass *analysis.Pass) (interface{}, error) {
 
 	// レコードのフィールドを集める
 	inspect.Preorder(recordFieldInspector, func(n ast.Node) {
+		if !includeTests && strings.HasSuffix(pass.Fset.Position(n.Pos()).Filename, "_test.go") {
+			return
+		}
+
 		switch decl := n.(type) {
 		case *ast.GenDecl:
 			if decl.Tok.IsKeyword() && decl.Tok.String() == "type" {
@@ -118,6 +125,11 @@ func run(pass *analysis.Pass) (interface{}, error) {
 
 	// 全てのexpressionについてチェック
 	inspect.Preorder(recordInitializerInspector, func(n ast.Node) {
+		// INCLUDE_TESTSがセットされていないときはテストファイルを無視する
+		if !includeTests && strings.HasSuffix(pass.Fset.Position(n.Pos()).Filename, "_test.go") {
+			return
+		}
+
 		for _, comment := range commentMapFiles[pass.Fset.Position(n.Pos()).Filename].Filter(n).Comments() {
 			if strings.HasPrefix(comment.Text(), "@ignore-golint-extra") {
 				return
@@ -128,6 +140,7 @@ func run(pass *analysis.Pass) (interface{}, error) {
 		case *ast.CompositeLit:
 			p, ok := expr.Type.(*ast.Ident)
 			if !ok {
+				// 型情報がIdentではないものとして map[string]string{} がある
 				return
 			}
 
@@ -153,8 +166,8 @@ func run(pass *analysis.Pass) (interface{}, error) {
 				return
 			}
 
-			// KeyValueExprが続くときだけ処理する
 			if len(expr.Elts) == 0 {
+				// H{} のように、空の宣言が行われている時は無視する
 				return
 			}
 
@@ -166,11 +179,16 @@ func run(pass *analysis.Pass) (interface{}, error) {
 			var keys []string
 			for _, e := range expr.Elts {
 				key := e.(*ast.KeyValueExpr).Key
+
 				ident, ok := key.(*ast.Ident)
 				if !ok {
-					log.Printf("Found a non ident key: %+v\n", key)
-					ast.Fprint(log.Writer(), &token.FileSet{}, expr, ast.NotNilFilter)
+					/* 構造体の型情報がast.IdentでありそれにKeyValueExprが続くがKeyがIdentではない例として以下のようなものがある
+					type M = map[string]string
 
+					M{
+					  "foo": "bar",
+					}
+					*/
 					return
 				}
 

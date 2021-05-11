@@ -28,6 +28,16 @@ func NoFieldsExample_success() {
 	_ = H{}
 }
 
+func MapExample_success() interface{} {
+	type Map = map[string]string
+
+	m := Map{
+		"fooo": "bar",
+	}
+
+	return m
+}
+
 // An example using multiple functions
 
 func Ex1_success() string {
