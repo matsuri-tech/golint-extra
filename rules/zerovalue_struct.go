@@ -128,6 +128,7 @@ func run(pass *analysis.Pass) (interface{}, error) {
 		case *ast.CompositeLit:
 			p, ok := expr.Type.(*ast.Ident)
 			if !ok {
+				// 型情報がIdentではないものとして map[string]string{} がある
 				return
 			}
 
@@ -153,8 +154,8 @@ func run(pass *analysis.Pass) (interface{}, error) {
 				return
 			}
 
-			// KeyValueExprが続くときだけ処理する
 			if len(expr.Elts) == 0 {
+				// H{} のように、空の宣言が行われている時は無視する
 				return
 			}
 
@@ -166,11 +167,16 @@ func run(pass *analysis.Pass) (interface{}, error) {
 			var keys []string
 			for _, e := range expr.Elts {
 				key := e.(*ast.KeyValueExpr).Key
+
 				ident, ok := key.(*ast.Ident)
 				if !ok {
-					log.Printf("Found a non ident key: %+v\n", key)
-					ast.Fprint(log.Writer(), &token.FileSet{}, expr, ast.NotNilFilter)
+					/* 構造体の型情報がast.IdentでありそれにKeyValueExprが続くがKeyがIdentではない例として以下のようなものがある
+					type M = map[string]string
 
+					M{
+					  "foo": "bar",
+					}
+					*/
 					return
 				}
 
