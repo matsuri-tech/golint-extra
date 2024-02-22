@@ -1,16 +1,17 @@
 package main
 
 import (
-	"github.com/matsuri-tech/golint-extra/rules"
-	"golang.org/x/tools/go/analysis/multichecker"
-	"io/ioutil"
+	"io"
 	"log"
 	"os"
+
+	"github.com/matsuri-tech/golint-extra/rules"
+	"golang.org/x/tools/go/analysis/multichecker"
 )
 
 func main() {
 	if os.Getenv("DEBUG") != "true" {
-		log.SetOutput(ioutil.Discard)
+		log.SetOutput(io.Discard)
 	} else {
 		log.SetOutput(os.Stdout)
 	}
