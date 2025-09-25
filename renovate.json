@@ -1,17 +1,17 @@
 {
   "$schema": "https://docs.renovatebot.com/renovate-schema.json",
   "timezone": "Asia/Tokyo",
-  "extends": ["config:recommended"],
+  "extends": ["config:recommended", ":configMigration"],
   "reviewers": ["hrdtbs"],
   "prConcurrentLimit": 2,
   "major": {
     "minimumReleaseAge": "7 days"
   },
   "minor": {
-    "minimumReleaseAge": "3 days"
+    "minimumReleaseAge": "7 days"
   },
   "patch": {
-    "minimumReleaseAge": "1 day",
+    "minimumReleaseAge": "7 days",
     "automerge": true
   },
   "separateMinorPatch": true,
