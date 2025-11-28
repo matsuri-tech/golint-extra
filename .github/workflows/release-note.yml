@@ -6,7 +6,7 @@ jobs:
   generate-release-notes-body:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v5
+      - uses: actions/checkout@v6
       - uses: matsuri-tech/generate-release-notes-body-based-on-pull-requests@v2
         with:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
