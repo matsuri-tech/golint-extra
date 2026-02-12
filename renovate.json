@@ -1,8 +1,13 @@
 {
   "$schema": "https://docs.renovatebot.com/renovate-schema.json",
   "timezone": "Asia/Tokyo",
-  "extends": ["config:recommended", ":configMigration"],
-  "reviewers": ["hrdtbs"],
+  "extends": [
+    "config:recommended",
+    ":configMigration"
+  ],
+  "reviewers": [
+    "hrdtbs"
+  ],
   "prConcurrentLimit": 2,
   "major": {
     "minimumReleaseAge": "7 days"
@@ -15,12 +20,28 @@
     "automerge": true
   },
   "separateMinorPatch": true,
-  "schedule": ["every weekday"],
+  "schedule": [
+    "every weekday"
+  ],
   "packageRules": [
     {
-      "matchDatasources": ["golang-version"],
-      "matchUpdateTypes": ["patch"],
+      "matchDatasources": [
+        "golang-version"
+      ],
+      "matchUpdateTypes": [
+        "patch"
+      ],
       "enabled": false
+    },
+    {
+      "matchDepTypes": [
+        "action"
+      ],
+      "pinDigests": true,
+      "matchPackageNames": [
+        "!actions/{/,}**",
+        "!matsuri-tech/{/,}**"
+      ]
     }
   ]
 }
