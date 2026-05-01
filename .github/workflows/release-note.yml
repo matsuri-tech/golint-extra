@@ -7,7 +7,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
-      - uses: matsuri-tech/generate-release-notes-body-based-on-pull-requests@8c4182a4a0d68e6aa9b3157845c6c9b59dd0d485 # v3.0.0
+      - uses: matsuri-tech/generate-release-notes-body-based-on-pull-requests@a0a2a6f436500201265ce0fd2f013bc3487bf742 # v3.0.1
         with:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           RELEASE_PREFIX: "Release Note"
