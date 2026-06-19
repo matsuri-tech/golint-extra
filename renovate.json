@@ -30,6 +30,12 @@
       "matchDepTypes": ["action"],
       "matchPackageNames": ["actions/{/,}**", "matsuri-tech/{/,}**"],
       "pinDigests": false
+    },
+    {
+      "matchDepTypes": ["action"],
+      "matchPackageNames": ["matsuri-tech/{/,}**"],
+      "matchUpdateTypes": ["minor", "patch"],
+      "enabled": false
     }
   ]
 }
