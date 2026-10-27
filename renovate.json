@@ -28,12 +28,12 @@
       "enabled": false
     },
     {
-      "matchDepTypes": ["action"],
+      "matchDepTypes": ["action", "workflow"],
       "matchPackageNames": ["actions/{/,}**", "matsuri-tech/{/,}**"],
       "pinDigests": false
     },
     {
-      "matchDepTypes": ["action"],
+      "matchDepTypes": ["action", "workflow"],
       "matchPackageNames": ["matsuri-tech/{/,}**"],
       "matchUpdateTypes": ["minor", "patch"],
       "enabled": false
